@@ -14,8 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
-import java.util.stream.Stream;
-
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -27,33 +25,39 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @PostMapping(APIs.Employee.addEmployee + "{yourId}")
-    public ResponseEntity<ResponseModel>addEmployee(@RequestBody Employee employee, @Param("yourId") Long authorizeId){
+    public ResponseEntity<ResponseModel> addEmployee(@RequestBody Employee employee, @Param("yourId") Long authorizeId) {
         return ok(ResponseModel.builder()
-                .data(Map.of("Added Employee: ",employeeService.addEmployee(employee, authorizeId)))
+                .data(Map.of("Added Employee: ", employeeService.addEmployee(employee, authorizeId)))
                 .message("Successful request")
                 .status(HttpStatus.OK)
                 .statusCode(HttpStatus.OK.value()).build());
     }
+
+    @GetMapping(APIs.Employee.getEmployeeById + "{employeeId}")
+    public ResponseEntity<ResponseModel> getEmployeeById(@Param("employeeId") Long employeeId) {
+        return ok(ResponseModel.builder().data(Map.of("Employee information: ", employeeService.getEmployeeById(employeeId))).message("Successful request").status(HttpStatus.OK).statusCode(HttpStatus.OK.value()).build());
+    }
+
     @PostMapping("/addCEO")
-    public ResponseEntity<ResponseModel>addCEO(@RequestBody Employee employee){
+    public ResponseEntity<ResponseModel> addCEO(@RequestBody Employee employee) {
         return ok(ResponseModel.builder()
-                .data(Map.of("Added CEO: ",employeeService.addCEO(employee)))
+                .data(Map.of("Added CEO: ", employeeService.addCEO(employee)))
                 .message("Successful request")
                 .status(HttpStatus.OK)
                 .statusCode(HttpStatus.OK.value()).build());
     }
 
     @GetMapping(APIs.Employee.getAllEmployee + "/emp")
-    public ResponseEntity<ResponseModel> getAllEmployee(){
+    public ResponseEntity<ResponseModel> getAllEmployee() {
         return ok(ResponseModel.builder()
-                .data(Map.of("All Employees: ",employeeService.findAllEmployees()))
+                .data(Map.of("All Employees: ", employeeService.findAllEmployees()))
                 .message("Successful request")
                 .status(HttpStatus.OK)
                 .statusCode(HttpStatus.OK.value()).build());
     }
 
     @PutMapping(APIs.Employee.updateEmployee + "/{employeeId}/{yourId}")
-    public ResponseEntity<ResponseModel> updateEmployeeRole(@Param("employeeId") Long employeeId, @Valid @RequestBody Role role, @Param("yourId") Long authorizeId){
+    public ResponseEntity<ResponseModel> updateEmployeeRole(@Param("employeeId") Long employeeId, @Valid @RequestBody Role role, @Param("yourId") Long authorizeId) {
         return ok(ResponseModel.builder()
                 .data(Map.of("Updated: ", employeeService.updateRole(employeeId, role, authorizeId)))
                 .message("Successful request")
@@ -62,7 +66,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping(APIs.Employee.deleteEmployee + "/{id}")
-    public ResponseEntity<ResponseModel> deleteEmployee(@PathVariable("id") Long employeeId){
+    public ResponseEntity<ResponseModel> deleteEmployee(@PathVariable("id") Long employeeId) {
         return ok(
                 ResponseModel.builder()
                         .data(Map.of("Deleted employee with id: ", employeeService.deleteEmployeeById(employeeId)))

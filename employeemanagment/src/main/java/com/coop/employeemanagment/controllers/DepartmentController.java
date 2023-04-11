@@ -1,6 +1,5 @@
 package com.coop.employeemanagment.controllers;
 
-
 import com.coop.employeemanagment.infrastructures.constans.APIs;
 import com.coop.employeemanagment.infrastructures.entity.Department;
 import com.coop.employeemanagment.models.ResponseModel;
@@ -12,10 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
-
-
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -95,6 +91,7 @@ public class DepartmentController {
                 .data(Map.of("Deleted department with id: ", departmentService.deleteDepartment(departmentId, authorizeId)))
                 .message("Successful request")
                 .status(HttpStatus.OK)
-                .statusCode(HttpStatus.OK.value()).build());}
+                .statusCode(HttpStatus.OK.value()).build());
+    }
 
 }

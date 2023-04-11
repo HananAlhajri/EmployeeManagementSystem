@@ -2,7 +2,6 @@ package com.coop.employeemanagment.controllers;
 
 import com.coop.employeemanagment.infrastructures.constans.APIs;
 import com.coop.employeemanagment.infrastructures.entity.Account;
-import com.coop.employeemanagment.infrastructures.entity.Role;
 import com.coop.employeemanagment.models.ResponseModel;
 import com.coop.employeemanagment.services.AccountService;
 import lombok.RequiredArgsConstructor;
@@ -11,10 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
-
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController

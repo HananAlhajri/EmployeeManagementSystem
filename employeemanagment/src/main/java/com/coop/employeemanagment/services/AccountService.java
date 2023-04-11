@@ -1,13 +1,10 @@
 package com.coop.employeemanagment.services;
 
 import com.coop.employeemanagment.infrastructures.entity.Account;
-import com.coop.employeemanagment.infrastructures.entity.Role;
 import com.coop.employeemanagment.repos.IAccountRepo;
-import com.coop.employeemanagment.repos.IRoleRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.List;
 

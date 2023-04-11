@@ -10,13 +10,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Table(name = "roles")
 public class Role implements Serializable {
+
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
-    private int id ; // not auto incremented
+    private int id;
     private String name;
     private String description;
-
-
 
 }

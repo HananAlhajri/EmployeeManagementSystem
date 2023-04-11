@@ -1,7 +1,5 @@
 package com.coop.employeemanagment.helper;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import com.coop.employeemanagment.repos.IEmployeeRepo;
 import com.coop.employeemanagment.repos.IDepartmentRepo;
 
@@ -12,7 +10,6 @@ public class HelperClass {
     public HelperClass() {
     }
 
-    //helper methods
     public static String isEmployeeExists(Long id) {
         if (employeeRepo.findById(id).isEmpty()) {
             return "Employee with "+id+" does not exist";
@@ -35,7 +32,5 @@ public class HelperClass {
             return false;
 
     }
-
-
 
 }

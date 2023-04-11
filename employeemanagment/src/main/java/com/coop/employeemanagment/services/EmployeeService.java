@@ -3,7 +3,6 @@ package com.coop.employeemanagment.services;
 import com.coop.employeemanagment.dto.DeptEmpDto;
 import com.coop.employeemanagment.infrastructures.entity.Department;
 import com.coop.employeemanagment.infrastructures.entity.Role;
-import com.coop.employeemanagment.repos.IDepartmentRepo;
 import com.coop.employeemanagment.repos.IEmployeeRepo;
 import com.coop.employeemanagment.infrastructures.entity.Employee;
 import jakarta.transaction.Transactional;
@@ -31,9 +30,15 @@ public class EmployeeService {
                         .collect(Collectors.toList())));
     }
 
-    public Object addCEO(Employee newEmployee) {
-        Employee newCEO = employeeRepo.save(newEmployee);
-        return employeeRepo.findById(newEmployee.getId()).stream()
+    public Object getEmployeeById(Long emp_id) {
+        result = isEmployeeExists(emp_id);
+        if (!result.equals("Yes")) return result.lines();
+        return employeeRepo.findById(emp_id);
+    }
+
+    public Object addCEO(Employee newCEO) {
+        employeeRepo.save(newCEO);
+        return employeeRepo.findById(newCEO.getId()).stream()
                 .map(employee -> new DeptEmpDto(
                         employee.getId(), employee.getFirstName(),
                         employee.getFatherName(),
@@ -46,23 +51,22 @@ public class EmployeeService {
         if (!result.equals("Yes"))
             return result.lines();
 
-            Employee authorizeEmployee = employeeRepo.getOne(authorizeId);
-            if(authorizeEmployee.getRole().getId() == 1) {
-                if (newEmployee.getRole().getId() == 1)
-                    return "You are not authorized. CEOs are only authorized to give MANAGER or EMPLOYEE role.";
-                else
-                    newEmployee.setActive(true);
-                    employeeRepo.save(newEmployee);
-            }
-            if(authorizeEmployee.getRole().getId() == 2) {
-                 if(newEmployee.getRole().getId() == 3) {
-                     newEmployee.setActive(false);
-                     employeeRepo.save(newEmployee);
-                 }
-                else return "You are not authorized. MANAGERs are only authorized to give EMPLOYEE role.";
-            }
+        Employee authorizeEmployee = employeeRepo.getOne(authorizeId);
+        if (authorizeEmployee.getRole().getId() == 1) {
+            if (newEmployee.getRole().getId() == 1)
+                return "You are not authorized. CEOs are only authorized to give MANAGER or EMPLOYEE role.";
+            else
+                newEmployee.setActive(true);
+            employeeRepo.save(newEmployee);
+        }
+        if (authorizeEmployee.getRole().getId() == 2) {
+            if (newEmployee.getRole().getId() == 3) {
+                newEmployee.setActive(false);
+                employeeRepo.save(newEmployee);
+            } else return "You are not authorized. MANAGERs are only authorized to give EMPLOYEE role.";
+        }
         if (authorizeEmployee.getRole().getId() == 3)
-                return "You are not authorized. Only CEO's and MANAGERs can add an employee.";
+            return "You are not authorized. Only CEO's and MANAGERs can add an employee.";
 
         return employeeRepo.findById(newEmployee.getId()).stream()
                 .map(employee -> new DeptEmpDto(
@@ -87,15 +91,12 @@ public class EmployeeService {
         if (authorizeEmployee.getRole().getId() == 1) {
             employee.setRole(role);
             return employeeRepo.save(employee);
-        }
-        else if (authorizeEmployee.getRole().getId() == 2) {
+        } else if (authorizeEmployee.getRole().getId() == 2) {
             if (role.getId() == 3) {
                 employee.setRole(role);
                 return employeeRepo.save(employee);
-            }
-            else return "You are not authorized. MANAGERs are allowed to give EMPLOYEE role only.";
-        }
-         else return "You are not authorized. Only CEOs and MANAGERs are allowed to update employee role.";
+            } else return "You are not authorized. MANAGERs are allowed to give EMPLOYEE role only.";
+        } else return "You are not authorized. Only CEOs and MANAGERs are allowed to update employee role.";
     }
 
     public Object deleteEmployeeById(Long emp_id) {

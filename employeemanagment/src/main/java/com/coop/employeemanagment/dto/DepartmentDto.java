@@ -3,9 +3,7 @@ package com.coop.employeemanagment.dto;
 import com.coop.employeemanagment.infrastructures.entity.Employee;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.List;
-import java.util.Optional;
 
 @Setter
 @Getter
@@ -13,7 +11,6 @@ public class DepartmentDto {
     private Long id;
     private String name;
     private String description;
-
     private Employee manager;
     private List<Employee> employees;
 
@@ -37,5 +34,4 @@ public class DepartmentDto {
         this.employees = employees;
 
     }
-
 }

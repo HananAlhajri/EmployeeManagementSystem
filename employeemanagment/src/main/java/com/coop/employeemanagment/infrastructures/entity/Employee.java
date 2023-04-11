@@ -66,5 +66,4 @@ public class Employee implements Serializable {
     @JsonBackReference
     private Set<Department> department;
 
-
 }
