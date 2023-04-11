@@ -1,5 +1,5 @@
 # Employee Management System
-Employee Managment System Using Spring Boot, Swagger and MySQL database. 
+Employee Management System Using Spring Boot, Swagger and MySQL database. 
 
 ## Tools and technologies utilized: 
 <li>Spring Web </li> 
@@ -9,7 +9,7 @@ Employee Managment System Using Spring Boot, Swagger and MySQL database.
 <li>MySQL database</li> 
 
 ## Sql commands:
-You can do the exactly the same using Swagger or Postman to send JSON. See next section.
+You can do the exact same thing using Swagger or Postman to send JSON. See next section.
 
 ### Department table: 
 ``` 
@@ -23,7 +23,7 @@ INSERT INTO `department` (`id`, `name`, `description`) VALUES
 ### Roles table: 
 ``` 
 INSERT INTO `roles` (`role_id`, `name`, `description`) VALUES
-	(1, 'CEO', 'Cheif Executive Officer'),
+	(1, 'CEO', 'Chief Executive Officer'),
 	(2, 'MANAGER', 'Section Manager'),
 	(3, 'EMPLOYEE', 'User');
 ```
@@ -100,18 +100,19 @@ INSERT INTO `employee` (`id`, `first_name`, `father_name`,`grand_father_name`, `
 ```
 
 
-# How it looks 
-<img src = "https://user-images.githubusercontent.com/92547643/231186483-005ff95e-2f74-4622-b20f-63fc366d5dbf.png"> 
-<img src = "https://user-images.githubusercontent.com/92547643/231184843-d04382a9-e16f-41c3-ae24-1d9a15661740.png"> <br><br>
+# How it looks: 
+<img src = "https://user-images.githubusercontent.com/92547643/231270218-867be17c-2564-43f1-bddd-0a45075332d2.png"> 
+<img src = "https://user-images.githubusercontent.com/92547643/231270364-732061c9-d3e0-41f2-b9b4-421294592d78.png">
+<img src = "https://user-images.githubusercontent.com/92547643/231270482-8e2928e1-ce59-4d56-b186-45efdb10d4d3.png"><br><br>
 
 ### IMPORTANT NOTEs: 
 > <li>'yourId' represent the employee doing the action. It is used to check the authority of the employee whose doing the action. <br> Example: A department can be deleted by CEO only. Therefor, the CEO enter their Id in 'yourId'.<br></li>
-> <li> addCEO is used to initilize the databse, it is meant to be used by admin for one time to add the CEO. Then, the CEO can perform all the methods.<br></li><br>
-> <li>In employee: "/all/emp" && "/delete/{id}" AND In Account: "account/all" are used by developer to check faster. They can be removed and checked from database.<br></li>
+> <li> addCEO is used to initialize the database, it is meant to be used by admin for one time to add the CEO. Then, the CEO can perform all the methods.<br></li><br>
+> <li>In employee: "/all/emp" && "/delete/{id} && getEmployeeById" AND In Account: "account/all" are used by developer to check faster. They can be removed and checked from database.<br></li>
 
 
 
-## Methods discription: 
+## Methods description: 
 #### For Employee
 POST: /add{yourId}
 > Takes yourId to authorize:
@@ -142,7 +143,7 @@ GET: /all{yourId}
 > Takes yourId to authorize: <li>CEO: can view all departments & the employees in each. </li> <li>MANAGER: can view only the departments they manage.</li><br>
 
 GET: /ManagerDepartments{yourId}
-> Takes yourId to authorize: <li>CEO: can view all departments & the employees in each. </li> <li>MANAGER: can view only the departments they manage.</li><br>
+> Takes yourId to authorize: <li>CEO: can view all departments & the employees in each. </li> <li>MANAGER: can view only the departments they manage. </li><br>
 
 DELETE: /delete/{departmentId}/{yourId}
 > Takes department Id to delete it, and yourId to authorize: only CEOs can delete a department under one Condition: <li>The department Must not contain a department manager or employees in it. </li>
@@ -150,10 +151,7 @@ DELETE: /delete/{departmentId}/{yourId}
 <br><br>
 
 
-## Dony by: 
+## Done by: 
 Hanan Alhajri, Maryam Alsuliman, and Renad Alosaimi.
-
-
-
 
 
