@@ -24,7 +24,7 @@ public class RoleController {
     @PostMapping(APIs.Role.addRole)
     public ResponseEntity<ResponseModel> addRole(@RequestBody Role role){
         return ok(ResponseModel.builder()
-                .data(Map.of("Added new role: ", roleService.addRole(role)))
+                .data(Map.of("result", roleService.addRole(role)))
                 .message("Successful request")
                 .status(HttpStatus.CREATED)
                 .statusCode(HttpStatus.OK.value()).build());
@@ -34,7 +34,7 @@ public class RoleController {
     public ResponseEntity<ResponseModel> allRoles(){
         List<List<Role>> employees = roleService.findAllRoles();
         return ResponseEntity.ok(ResponseModel.builder()
-                .data(Map.of("All Roles: ", employees))
+                .data(Map.of("result", employees))
                 .message("Successful request")
                 .status(HttpStatus.OK)
                 .statusCode(HttpStatus.OK.value()).build());

@@ -20,7 +20,7 @@ public class LoginController {
     @PostMapping(APIs.Account.login)
     public ResponseEntity<ResponseModel> login(@PathVariable String username, @PathVariable String password){
         return ok(ResponseModel.builder()
-                .data(Map.of("", loginService.login(username, password)))
+                .data(Map.of("result", loginService.login(username, password)))
                 .message("Successful request")
                 .status(HttpStatus.OK)
                 .statusCode(HttpStatus.OK.value()).build());

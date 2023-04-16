@@ -39,15 +39,6 @@ public class EmployeeController {
                 .statusCode(HttpStatus.OK.value()).build());
     }
 
-//    @PostMapping("/addCEO")
-//    public ResponseEntity<ResponseModel> addCEO(@RequestBody Employee employee) {
-//        return ok(ResponseModel.builder()
-//                .data(Map.of("Added CEO: ", employeeService.addCEO(employee)))
-//                .message("Successful request")
-//                .status(HttpStatus.OK)
-//                .statusCode(HttpStatus.OK.value()).build());
-//    }
-
     @GetMapping(APIs.Employee.getAllEmployee + "/emp")
     public ResponseEntity<ResponseModel> getAllEmployee() {
         return ok(ResponseModel.builder()

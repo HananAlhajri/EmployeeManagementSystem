@@ -106,12 +106,12 @@ public class EmployeeService {
         } else throw new IllegalStateException("You are not authorized. Only CEOs and MANAGERs are allowed to update employee role.");
     }
 
-    public Boolean deleteEmployeeById(Long employeeId) {
+    public Long deleteEmployeeById(Long employeeId) {
         if (!isEmployeeExists(employeeId, employeeRepo))
             throw new IllegalStateException("Employee with id: " + employeeId + "does not exist");
 
         employeeRepo.deleteById(employeeId);
-        return true;
+        return employeeId;
     }
 
 }

@@ -24,7 +24,7 @@ public class AccountController {
     @PostMapping(APIs.Account.AddAccount)
     public ResponseEntity<ResponseModel> addAccount(@RequestBody Account account){
         return ok(ResponseModel.builder()
-                .data(Map.of("Added new Account: ", accountService.addAccount(account)))
+                .data(Map.of("result", accountService.addAccount(account)))
                 .message("Successful request")
                 .status(HttpStatus.CREATED)
                 .statusCode(HttpStatus.OK.value()).build());
@@ -34,7 +34,7 @@ public class AccountController {
     public ResponseEntity<ResponseModel> allAccounts(){
         List<List<Account>> employees = accountService.findAllAccounts();
         return ResponseEntity.ok(ResponseModel.builder()
-                .data(Map.of("All Accounts: ", employees))
+                .data(Map.of("result", employees))
                 .message("Successful request")
                 .status(HttpStatus.OK)
                 .statusCode(HttpStatus.OK.value()).build());
