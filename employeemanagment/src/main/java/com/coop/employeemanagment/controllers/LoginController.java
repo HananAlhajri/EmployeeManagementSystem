@@ -17,7 +17,7 @@ public class LoginController {
 
     private LoginService loginService;
 
-    @PostMapping(APIs.Account.login+"{username}/{password}")
+    @PostMapping(APIs.Account.login)
     public ResponseEntity<ResponseModel> login(@PathVariable String username, @PathVariable String password){
         return ok(ResponseModel.builder()
                 .data(Map.of("", loginService.login(username, password)))
