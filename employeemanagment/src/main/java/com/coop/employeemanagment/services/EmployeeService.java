@@ -2,7 +2,7 @@ package com.coop.employeemanagment.services;
 
 import com.coop.employeemanagment.dto.DeptEmpDto;
 import com.coop.employeemanagment.dto.EmployeeDto;
-import com.coop.employeemanagment.infrastructures.constans.Role;
+import com.coop.employeemanagment.infrastructures.entity.Role;
 import com.coop.employeemanagment.infrastructures.entity.Department;
 import com.coop.employeemanagment.repos.IEmployeeRepo;
 import com.coop.employeemanagment.infrastructures.entity.Employee;
@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import static com.coop.employeemanagment.helper.HelperClass.isEmployeeExists;
-import static com.coop.employeemanagment.infrastructures.constans.Role.*;
 
 @RequiredArgsConstructor
 @Service
@@ -41,7 +40,8 @@ public class EmployeeService {
                         employee.getId(), employee.getFirstName(),
                         employee.getFatherName(), employee.getGrandFatherName(),
                         employee.getLastName(), employee.getNationalID(),
-                        employee.getDateOfBirth(), employee.getRole() ,employee.getAccount()))
+                        employee.getDateOfBirth(), employee.getJobTitle(), employee.getRole()
+                        ,employee.getAccount().getUsername()))
                         .toList();
     }
 
@@ -55,39 +55,52 @@ public class EmployeeService {
 //                        employee.getLastName(), employee.getRole(), employee.getAccount()));
 //    }
 
-    public List<EmployeeDto> addEmployee(EmployeeDto newEmployee, Long authorizeId) {
+    public List<EmployeeDto> addEmployee(EmployeeDto empDTO, Long authorizeId) {
         if (!isEmployeeExists(authorizeId, employeeRepo))
             throw new IllegalStateException("Employee with id: "+authorizeId+ "does not exist");
 
         Employee authorizeEmployee = employeeRepo.findById(authorizeId).get();
-        if (authorizeEmployee.getRole() == CEO) {
-            if (newEmployee.getRole() == CEO)
+        Employee employee = new Employee();
+        employee.setFirstName(empDTO.getFirstName());
+        employee.setFatherName(empDTO.getFatherName());
+        employee.setGrandFatherName(empDTO.getGrandFatherName());
+        employee.setLastName(empDTO.getLastName());
+        employee.setNationalID(empDTO.getNationalID());
+        employee.setDateOfBirth(empDTO.getDateOfBirth());
+        employee.setJobTitle(empDTO.getJobTitle());
+        String username = (empDTO.getFirstName()).substring(0,1) + empDTO.getLastName().substring(0,2);
+        employee.setAccount(empDTO.getAccount());
+        employee.setRole(empDTO.getRole());
+
+        if (authorizeEmployee.getRole().getId() == 1) {
+            if (empDTO.getRole().getId() == 1)
                     throw new IllegalStateException("You are not authorized. CEOs are only authorized to give MANAGER or EMPLOYEE role.");
-            else
-                newEmployee.setActive(true);
-            employeeRepo.save(newEmployee);
+            else{
+                employee.setActive(true);
+                 employeeRepo.save(employee);}
         }
-        if (authorizeEmployee.getRole() == MANAGER) {
-            if (newEmployee.getRole() == USER) {
-                newEmployee.setActive(false);
-                employeeRepo.save(newEmployee);
+        if (authorizeEmployee.getRole().getId() == 2) {
+            if (empDTO.getRole().getId() == 3) {
+                employee.setActive(false);
+                employeeRepo.save(employee);
             } else
                 throw new IllegalStateException("You are not authorized. MANAGERs are only authorized to give EMPLOYEE role.");
         }
-        if (authorizeEmployee.getRole() == USER)
+        if (authorizeEmployee.getRole().getId() == 3)
              throw new IllegalStateException("You are not authorized. Only CEO's and MANAGERs can add an employee.");
 
-        return employeeRepo.findById(newEmployee.getId()).stream()
-                .map(employee -> new EmployeeDto(
-                        employee.getId(), employee.getFirstName(),
-                        employee.getFatherName(), employee.getGrandFatherName(),
-                        employee.getLastName(), employee.getNationalID(),
-                        employee.getDateOfBirth(), employee.getRole(),employee.getAccount()))
+        return employeeRepo.findById(empDTO.getId()).stream()
+                .map(e -> new EmployeeDto(
+                        e.getId(), e.getFirstName(),
+                        e.getFatherName(), e.getGrandFatherName(),
+                        e.getLastName(), e.getNationalID(),
+                        e.getDateOfBirth(), e.getJobTitle(),
+                        e.getRole(), e.getAccount()))
                         .toList();
     }
 
     @Transactional
-    public Object updateRole(Long employeeId_toUpdate, Role role, Long authorizeId) {
+    public List<EmployeeDto> updateRole(Long employeeId_toUpdate, Role role, Long authorizeId) {
         if (!isEmployeeExists(employeeId_toUpdate, employeeRepo))
             throw new IllegalStateException("Employee with id: "+employeeId_toUpdate+ "does not exist");
         if (!isEmployeeExists(authorizeId, employeeRepo))
@@ -97,15 +110,27 @@ public class EmployeeService {
         Employee employee = employeeRepo.findById(employeeId_toUpdate).get();
         Employee authorizeEmployee = employeeRepo.findById(authorizeId).get();
 
-        if (authorizeEmployee.getRole() == CEO) {
+        if (authorizeEmployee.getRole().getId() == 1) {
             employee.setRole(role);
-            return employeeRepo.save(employee);
-        } else if (authorizeEmployee.getRole() == MANAGER) {
-            if (role == USER) {
+            employeeRepo.save(employee);
+            return employeeRepo.findById(employee.getId()).map(e -> new EmployeeDto(
+                            e.getId(), e.getFirstName(),
+                            e.getFatherName(), e.getGrandFatherName(),
+                            e.getLastName(), e.getNationalID(),
+                            e.getDateOfBirth(), e.getJobTitle(),
+                            e.getRole(), e.getAccount().getUsername())).stream().toList();
+        } else if (authorizeEmployee.getRole().getId() == 2) {
+            if (role.getId() == 3) {
                 employee.setRole(role);
-                return employeeRepo.save(employee);
-            } else return "You are not authorized. MANAGERs are allowed to give EMPLOYEE role only.";
-        } else return "You are not authorized. Only CEOs and MANAGERs are allowed to update employee role.";
+                employeeRepo.save(employee);
+                return employeeRepo.findById(employee.getId()).map(e -> new EmployeeDto(
+                        e.getId(), e.getFirstName(),
+                        e.getFatherName(), e.getGrandFatherName(),
+                        e.getLastName(), e.getNationalID(),
+                        e.getDateOfBirth(), e.getJobTitle(),
+                        e.getRole(), e.getAccount().getUsername())).stream().toList();
+            } else throw new IllegalStateException("You are not authorized. MANAGERs are allowed to give EMPLOYEE role only.");
+        } else throw new IllegalStateException("You are not authorized. Only CEOs and MANAGERs are allowed to update employee role.");
     }
 
     public Boolean deleteEmployeeById(Long employeeId) {
@@ -115,12 +140,5 @@ public class EmployeeService {
         employeeRepo.deleteById(employeeId);
         return true;
     }
-
-//    public Boolean isEmployeeExists(Long id, IEmployeeRepo employeeRepo) {
-//        if (employeeRepo.findById(id).isEmpty()) {
-//            return false;
-//        }
-//        else return true;
-//    }
 
 }

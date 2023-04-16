@@ -1,7 +1,7 @@
 package com.coop.employeemanagment.infrastructures.entity;
 
-import com.coop.employeemanagment.infrastructures.constans.Role;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
@@ -39,19 +39,23 @@ public class Employee implements Serializable {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Column(name = "job_title", nullable = false)
+    private String jobTitle;
+
     @Column(name = "national_id", nullable = false)
     private long nationalID;
 
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
+    @JsonIgnore
+    @Column(columnDefinition = "boolean default false")
+    private boolean isActive = false;
+
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "role_id")
     @Fetch(FetchMode.JOIN)
     private Role role;
-
-    @Column(columnDefinition = "boolean default false")
-    private boolean isActive = false;
 
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "account_id", referencedColumnName = "id")
@@ -63,5 +67,6 @@ public class Employee implements Serializable {
             mappedBy = "employees")
     @JsonBackReference
     private Set<Department> department;
+
 
 }

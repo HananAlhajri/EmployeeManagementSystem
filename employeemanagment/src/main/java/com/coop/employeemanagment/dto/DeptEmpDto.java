@@ -1,7 +1,7 @@
 package com.coop.employeemanagment.dto;
 
-import com.coop.employeemanagment.infrastructures.constans.Role;
 import com.coop.employeemanagment.infrastructures.entity.Account;
+import com.coop.employeemanagment.infrastructures.entity.Role;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

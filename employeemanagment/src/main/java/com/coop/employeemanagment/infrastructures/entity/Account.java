@@ -1,6 +1,6 @@
 package com.coop.employeemanagment.infrastructures.entity;
 
-import com.coop.employeemanagment.infrastructures.constans.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.io.Serializable;
@@ -25,15 +25,12 @@ public class Account implements Serializable {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(columnDefinition = "boolean default false")
-    private boolean isActive = false;
-
-    private Role role;
-
-    @Column(name = "job_title", nullable = false)
-    private String jobTitle;
-
+    @JsonIgnore
     @OneToOne(mappedBy = "account")
     @JsonBackReference
     private Employee employee;
+
+
+    public Account(long accountId, String username, String password) {
+    }
 }
