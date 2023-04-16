@@ -1,6 +1,6 @@
 package com.coop.employeemanagment.services;
 
-import com.coop.employeemanagment.infrastructures.entity.Role;
+import com.coop.employeemanagment.infrastructures.constans.Role;
 import com.coop.employeemanagment.repos.IRoleRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
