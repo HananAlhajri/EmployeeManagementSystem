@@ -7,8 +7,9 @@ import com.coop.employeemanagment.repos.IDepartmentRepo;
 import com.coop.employeemanagment.repos.IEmployeeRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,9 +17,10 @@ import static com.coop.employeemanagment.helper.HelperClass.*;
 
 @RequiredArgsConstructor
 @Service
-@Slf4j
 public class DepartmentService {
+    @Autowired
     private final IDepartmentRepo departmentRepo;
+    @Autowired
     private final IEmployeeRepo employeeRepo;
 
     public Stream<DepartmentDto> findAllDepartments(Long authorizeId){
@@ -43,7 +45,7 @@ public class DepartmentService {
         Employee authorizeEmployee = employeeRepo.findById(authorizeId).get();
         if(isEmployeeExists(authorizeId,employeeRepo)) {
             if (authorizeEmployee.getRole().getId() == 2) {
-                return authorizeEmployee.getDepartment()
+                return departmentRepo.findAllByDepartmentManagerId(authorizeId)
                         .stream().map(department -> new DepartmentDto(department.getId(),
                                 department.getName(),
                                 department.getDescription(),
