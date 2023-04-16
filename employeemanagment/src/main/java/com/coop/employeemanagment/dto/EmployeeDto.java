@@ -4,12 +4,14 @@ import com.coop.employeemanagment.infrastructures.entity.Account;
 import com.coop.employeemanagment.infrastructures.entity.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class EmployeeDto {
     private long id;
     private String firstName;
@@ -23,8 +25,6 @@ public class EmployeeDto {
     private String username;
     private String jobTitle;
     private Role role;
-
-    public EmployeeDto() {}
 
     public EmployeeDto(long id, String firstName, String fatherName, String grandFatherName, String lastName, long nationalID, LocalDate dateOfBirth, String jobTitle, Role role, Account account) {
         this.id = id;

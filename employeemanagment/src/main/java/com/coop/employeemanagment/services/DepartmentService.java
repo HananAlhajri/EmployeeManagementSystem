@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,7 +56,7 @@ public class DepartmentService {
         }
         throw new IllegalStateException("Employee with id "+authorizeId+" does not exist");
     }
-    public Stream<? extends Object> findDepartmentById(Long departmentId, Long authorizeId){
+    public Stream<DepartmentDto> findDepartmentById(Long departmentId, Long authorizeId){
         if(!isEmployeeExists(authorizeId,employeeRepo))
             throw new IllegalStateException("Employee with id "+authorizeId+ " does not exist");
 
@@ -73,7 +74,7 @@ public class DepartmentService {
         return null;
     }
 
-    public Department addDepartment(DepartmentDto department, Long authorizeId) {
+    public Department addDepartment(DepartmentDto deptDto, Long authorizeId) {
         if(!isEmployeeExists(authorizeId,employeeRepo))
             throw new IllegalStateException("Employee with id "+authorizeId+ " does not exist");
 
@@ -81,7 +82,10 @@ public class DepartmentService {
             if (authorizeEmployee.getRole().getId() !=  1)
                 throw new IllegalStateException("You are not authorized to create a department.");
 
-            else return departmentRepo.save(department);
+        Department department = new Department();
+        department.setName(deptDto.getName());
+        department.setDescription(deptDto.getDescription());
+        return departmentRepo.save(department);
     }
 
     @Transactional
@@ -127,29 +131,28 @@ public class DepartmentService {
     }
 
     @Transactional
-    public Department updateDepartment (Long departmentId, DepartmentDto departmentDetails, Long authorizeId){
+    public Department updateDepartment (Long departmentId, DepartmentDto deptDto, Long authorizeId){
         if(!isDepartmentExists(departmentId,departmentRepo))
             throw new IllegalStateException("Department with id "+departmentId+ " does not exist");
 
         if(!isEmployeeExists(authorizeId,employeeRepo))
             throw new IllegalStateException("Employee with id "+authorizeId+ " does not exist");
 
-        Department department = departmentRepo.findById(departmentId).get();
         Employee authorizeEmployee = employeeRepo.findById(authorizeId).get();
         if(authorizeEmployee.getRole().getId() != 1)
             throw new IllegalStateException("You are not authorized to update a department.");
 
-        department.setName(departmentDetails.getName());
-        department.setDescription(departmentDetails.getDescription());
+        Department department = departmentRepo.findById(departmentId).get();
+        department.setName(deptDto.getName());
+        department.setDescription(deptDto.getDescription());
         if(department.getDepartmentManager() != null) {
             Long managerId = department.getDepartmentManager().getId();
-            //Employee manager = employeeRepo.findById(managerId).get();
             addManagerInDepartment(departmentId, managerId , authorizeId );
         }
         return departmentRepo.save(department);
     }
 
-    public Object deleteDepartment(Long departmentId, Long authorizeId) {
+    public Long deleteDepartment(Long departmentId, Long authorizeId) {
         if(!isDepartmentExists(departmentId,departmentRepo))
             throw new IllegalStateException("Department with id "+departmentId+ " does not exist");
 
@@ -160,9 +163,9 @@ public class DepartmentService {
         Employee employee = employeeRepo.findById(authorizeId).get();
 
         if(employee.getRole().getId() != 1)
-           return "You are not authorized to delete a department.";
+            throw new IllegalStateException("You are not authorized to delete a department.");
         if (deleteDepartment.getDepartmentManager() != null || !deleteDepartment.getEmployees().isEmpty())
-            return "Can not delete department with employees or a manager in it.";
+            throw new IllegalStateException("Can not delete department with employees or a manager in it");
 
         departmentRepo.deleteById(departmentId);
         return departmentId;
