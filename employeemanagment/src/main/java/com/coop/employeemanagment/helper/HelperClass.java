@@ -29,5 +29,4 @@ public class HelperClass {
         }
         else return false;
     }
-
 }
