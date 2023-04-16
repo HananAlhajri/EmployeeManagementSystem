@@ -1,5 +1,6 @@
 package com.coop.employeemanagment.infrastructures.entity;
 
+import com.coop.employeemanagment.infrastructures.constans.Role;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -32,14 +33,11 @@ public class Employee implements Serializable {
     @Column(name = "father_name", nullable = false)
     private String fatherName;
 
-    @Column(name = "grand_father_name", nullable = true)
+    @Column(name = "grand_father_name")
     private String grandFatherName;
 
     @Column(name = "last_name", nullable = false)
     private String lastName;
-
-    @Column(name = "job_title", nullable = false)
-    private String jobTitle;
 
     @Column(name = "national_id", nullable = false)
     private long nationalID;
@@ -47,13 +45,13 @@ public class Employee implements Serializable {
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
-    @Column(columnDefinition = "boolean default false")
-    private boolean isActive = false;
-
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "role_id")
     @Fetch(FetchMode.JOIN)
     private Role role;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean isActive = false;
 
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "account_id", referencedColumnName = "id")
