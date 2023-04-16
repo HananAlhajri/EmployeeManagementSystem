@@ -6,7 +6,6 @@ import com.coop.employeemanagment.models.ResponseModel;
 import com.coop.employeemanagment.services.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,6 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping(APIs.Account.baseUrl)
 public class AccountController {
 
-    @Autowired
     private final AccountService accountService;
 
     @PostMapping(APIs.Account.AddAccount)
@@ -34,7 +32,7 @@ public class AccountController {
 
     @GetMapping(APIs.Account.allAccounts)
     public ResponseEntity<ResponseModel> allAccounts(){
-        List<Object> employees = accountService.findAllAccounts();
+        List<List<Account>> employees = accountService.findAllAccounts();
         return ResponseEntity.ok(ResponseModel.builder()
                 .data(Map.of("All Accounts: ", employees))
                 .message("Successful request")

@@ -7,9 +7,8 @@ import com.coop.employeemanagment.repos.IDepartmentRepo;
 import com.coop.employeemanagment.repos.IEmployeeRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -17,10 +16,9 @@ import static com.coop.employeemanagment.helper.HelperClass.*;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class DepartmentService {
-    @Autowired
     private final IDepartmentRepo departmentRepo;
-    @Autowired
     private final IEmployeeRepo employeeRepo;
 
     public Stream<DepartmentDto> findAllDepartments(Long authorizeId){

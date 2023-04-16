@@ -6,7 +6,6 @@ import com.coop.employeemanagment.models.ResponseModel;
 import com.coop.employeemanagment.services.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,6 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping(APIs.Role.baseUrl)
 public class RoleController {
 
-    @Autowired
     private final RoleService roleService;
 
     @PostMapping(APIs.Role.addRole)

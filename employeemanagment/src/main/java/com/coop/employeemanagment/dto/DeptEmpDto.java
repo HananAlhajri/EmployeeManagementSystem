@@ -17,13 +17,9 @@ public class DeptEmpDto {
     private String empFirstName;
     private String empfatherName;
     private String empGrandFatherName;
-
     private String empLastName;
     private Role empRole;
-    private Account empAccount;
-
     private List<String> departments;
-
     private String username;
 
     public DeptEmpDto(long empId, String empFirstName, String empfatherName, String empGrandFatherName, String empLastName, Role empRole, Account empAccount, List<String> departments) {

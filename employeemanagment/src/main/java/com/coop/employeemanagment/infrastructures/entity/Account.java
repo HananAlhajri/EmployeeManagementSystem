@@ -30,7 +30,4 @@ public class Account implements Serializable {
     @JsonBackReference
     private Employee employee;
 
-
-    public Account(long accountId, String username, String password) {
-    }
 }

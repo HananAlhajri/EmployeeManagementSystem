@@ -3,14 +3,14 @@ package com.coop.employeemanagment.services;
 import com.coop.employeemanagment.infrastructures.entity.Account;
 import com.coop.employeemanagment.repos.IAccountRepo;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
+@Slf4j
 public class LoginService {
 
-    @Autowired
     private IAccountRepo accountRepo;
 
     public Object login(String username, String password) {

@@ -5,8 +5,7 @@ import com.coop.employeemanagment.repos.IDepartmentRepo;
 
 public class HelperClass {
 
-    public HelperClass() {
-    }
+    public HelperClass() {}
 
     public static Boolean isEmployeeExists(Long id, IEmployeeRepo employeeRepo) {
         if (employeeRepo.findById(id).isEmpty()) {
