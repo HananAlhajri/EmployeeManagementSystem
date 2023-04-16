@@ -1,7 +1,7 @@
 package com.coop.employeemanagment.controllers;
 
-import com.coop.employeemanagment.infrastructures.entity.Employee;
-import com.coop.employeemanagment.infrastructures.entity.Role;
+import com.coop.employeemanagment.dto.EmployeeDto;
+import com.coop.employeemanagment.infrastructures.constans.Role;
 import com.coop.employeemanagment.models.ResponseModel;
 import com.coop.employeemanagment.infrastructures.constans.APIs;
 import com.coop.employeemanagment.services.EmployeeService;
@@ -25,7 +25,7 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @PostMapping(APIs.Employee.addEmployee + "{yourId}")
-    public ResponseEntity<ResponseModel> addEmployee(@RequestBody Employee employee, @Param("yourId") Long authorizeId) {
+    public ResponseEntity<ResponseModel> addEmployee(@RequestBody EmployeeDto employee, @Param("yourId") Long authorizeId) {
         return ok(ResponseModel.builder()
                 .data(Map.of("Added Employee: ", employeeService.addEmployee(employee, authorizeId)))
                 .message("Successful request")
@@ -38,14 +38,14 @@ public class EmployeeController {
         return ok(ResponseModel.builder().data(Map.of("Employee information: ", employeeService.getEmployeeById(employeeId))).message("Successful request").status(HttpStatus.OK).statusCode(HttpStatus.OK.value()).build());
     }
 
-    @PostMapping("/addCEO")
-    public ResponseEntity<ResponseModel> addCEO(@RequestBody Employee employee) {
-        return ok(ResponseModel.builder()
-                .data(Map.of("Added CEO: ", employeeService.addCEO(employee)))
-                .message("Successful request")
-                .status(HttpStatus.OK)
-                .statusCode(HttpStatus.OK.value()).build());
-    }
+//    @PostMapping("/addCEO")
+//    public ResponseEntity<ResponseModel> addCEO(@RequestBody Employee employee) {
+//        return ok(ResponseModel.builder()
+//                .data(Map.of("Added CEO: ", employeeService.addCEO(employee)))
+//                .message("Successful request")
+//                .status(HttpStatus.OK)
+//                .statusCode(HttpStatus.OK.value()).build());
+//    }
 
     @GetMapping(APIs.Employee.getAllEmployee + "/emp")
     public ResponseEntity<ResponseModel> getAllEmployee() {

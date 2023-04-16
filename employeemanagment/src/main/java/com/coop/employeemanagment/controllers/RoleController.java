@@ -1,7 +1,7 @@
 package com.coop.employeemanagment.controllers;
 
 import com.coop.employeemanagment.infrastructures.constans.APIs;
-import com.coop.employeemanagment.infrastructures.entity.Role;
+import com.coop.employeemanagment.infrastructures.constans.Role;
 import com.coop.employeemanagment.models.ResponseModel;
 import com.coop.employeemanagment.services.RoleService;
 import lombok.RequiredArgsConstructor;
