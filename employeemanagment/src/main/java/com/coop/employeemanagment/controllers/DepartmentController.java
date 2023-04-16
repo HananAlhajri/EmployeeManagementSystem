@@ -1,7 +1,7 @@
 package com.coop.employeemanagment.controllers;
 
+import com.coop.employeemanagment.dto.DepartmentDto;
 import com.coop.employeemanagment.infrastructures.constans.APIs;
-import com.coop.employeemanagment.infrastructures.entity.Department;
 import com.coop.employeemanagment.models.ResponseModel;
 import com.coop.employeemanagment.services.DepartmentService;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class DepartmentController {
     }
 
     @PostMapping(APIs.Department.addDepartment + "{yourId}")
-    public ResponseEntity<ResponseModel>addDepartment(@RequestBody Department department, @Param("yourId") Long employeeId){
+    public ResponseEntity<ResponseModel>addDepartment(@RequestBody DepartmentDto department, @Param("yourId") Long employeeId){
         return ok(ResponseModel.builder()
                 .data(Map.of("Added department: ", departmentService.addDepartment(department, employeeId)))
                 .message("Successful request")
@@ -77,7 +77,7 @@ public class DepartmentController {
        }
 
     @PutMapping (APIs.Department.updateDepartment + "/{departmentId}/{yourId}")
-    public ResponseEntity<ResponseModel> updateDepartment(@PathVariable("departmentId") Long id, @RequestBody Department departmentDetails, @Param("yourId") Long authorizeId){
+    public ResponseEntity<ResponseModel> updateDepartment(@PathVariable("departmentId") Long id, @RequestBody DepartmentDto departmentDetails, @Param("yourId") Long authorizeId){
         return ok(ResponseModel.builder()
                 .data(Map.of("Updated: ", departmentService.updateDepartment(id, departmentDetails, authorizeId)))
                 .message("Successful request")

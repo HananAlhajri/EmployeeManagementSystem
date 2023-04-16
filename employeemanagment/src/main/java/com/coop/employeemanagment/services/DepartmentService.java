@@ -9,10 +9,11 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.coop.employeemanagment.helper.HelperClass;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.coop.employeemanagment.helper.HelperClass.*;
+import static com.coop.employeemanagment.infrastructures.constans.Role.*;
 
 @RequiredArgsConstructor
 @Service
@@ -22,15 +23,12 @@ public class DepartmentService {
     @Autowired
     private final IEmployeeRepo employeeRepo;
 
-    private String result; // to get the result from (helper class) functions.
+    public Stream<DepartmentDto> findAllDepartments(Long authorizeId){
+        if(!isEmployeeExists(authorizeId,employeeRepo))
+           throw new IllegalStateException("Employee with id "+authorizeId+ " does not exist");
 
-    public Stream<? extends Object> findAllDepartments(Long authorizeId){
-        result = HelperClass.isEmployeeExists(authorizeId);
-        if(!result.equals("Yes"))
-            return result.lines();
-
-            Employee authorizeEmployee = employeeRepo.getOne(authorizeId);
-            if (authorizeEmployee.getRole().getId() == 1) {
+        Employee authorizeEmployee = employeeRepo.findById(authorizeId).get();
+            if (authorizeEmployee.getRole() == CEO) {
                 return departmentRepo.findAll().stream()
                         .map(department -> new DepartmentDto(
                                 department.getId(),
@@ -40,16 +38,14 @@ public class DepartmentService {
                                 department.getEmployees().stream()
                                         .collect(Collectors.toList())));
             }
-            else
-                return "You are not authorized. Only CEOs can view the departments information ".lines();
+        throw new IllegalStateException("You are not authorized. Only CEOs can view the departments information ");
     }
 
-    public Stream<? extends Object> managerDepartments(Long authorizeId) {
-        Optional<Employee> authorizeEmployee = employeeRepo.findById(authorizeId);
-        result = HelperClass.isEmployeeExists(authorizeId);
-        if (result.equals("Yes")) {
-            if (authorizeEmployee.get().getRole().getId() == 2) {
-                return authorizeEmployee.get().getDepartment()
+    public Stream<DepartmentDto> managerDepartments(Long authorizeId) {
+        Employee authorizeEmployee = employeeRepo.findById(authorizeId).get();
+        if(isEmployeeExists(authorizeId,employeeRepo)) {
+            if (authorizeEmployee.getRole() == MANAGER) {
+                return authorizeEmployee.getDepartment()
                         .stream().map(department -> new DepartmentDto(department.getId(),
                                 department.getName(),
                                 department.getDescription(),
@@ -58,18 +54,17 @@ public class DepartmentService {
                                         .collect(Collectors.toList())));
             }
         }
-        return result.lines();
+        throw new IllegalStateException("Employee with id "+authorizeId+" does not exist");
     }
     public Stream<? extends Object> findDepartmentById(Long departmentId, Long authorizeId){
-        result = HelperClass.isEmployeeExists(authorizeId);
-        if(!result.equals("Yes"))
-            return result.lines();
-        result = HelperClass.isDepartmentExists(departmentId);
-        if(!result.equals("Yes"))
-            return result.lines();
+        if(!isEmployeeExists(authorizeId,employeeRepo))
+            throw new IllegalStateException("Employee with id "+authorizeId+ " does not exist");
 
-        Optional<Employee> authorizeEmployee = employeeRepo.findById(authorizeId);
-        if(authorizeEmployee.get().getRole().getId() == 1 || authorizeEmployee.get().getRole().getId() == 2 ) {
+        if(!isDepartmentExists(departmentId, departmentRepo))
+            throw new IllegalStateException("Department with id "+departmentId+ " does not exist");
+
+        Employee authorizeEmployee = employeeRepo.findById(authorizeId).get();
+        if(authorizeEmployee.getRole() == CEO || authorizeEmployee.getRole() == MANAGER ) {
             return departmentRepo.findById(departmentId).stream()
                     .map(department -> new DepartmentDto(department.getId(),
                             department.getName(),
@@ -79,99 +74,93 @@ public class DepartmentService {
         return null;
     }
 
-    public Object addDepartment(Department department, Long authorizeId) {
-        result = HelperClass.isEmployeeExists(authorizeId);
-        if(!result.equals("Yes"))
-            return result.lines();
+    public Department addDepartment(DepartmentDto department, Long authorizeId) {
+        if(!isEmployeeExists(authorizeId,employeeRepo))
+            throw new IllegalStateException("Employee with id "+authorizeId+ " does not exist");
 
-        Optional<Employee> authorizeEmployee = employeeRepo.findById(authorizeId);
-            if (authorizeEmployee.get().getRole().getId() != 1)
-                return "You are not authorized to create a department.";
+        Employee authorizeEmployee = employeeRepo.findById(authorizeId).get();
+            if (authorizeEmployee.getRole() !=  CEO)
+                throw new IllegalStateException("You are not authorized to create a department.");
 
-        return departmentRepo.save(department);
+            else return departmentRepo.save(department);
     }
 
     @Transactional
-    public Object addManagerInDepartment (Long deptId, Long managerId, Long authorizeId) {
-        result = HelperClass.isDepartmentExists(deptId);
-        if (!result.equals("Yes"))
-            return result.lines();
-        
-        if(HelperClass.isTheyExist(managerId,authorizeId)) {
-            Employee authorizeEmployee = employeeRepo.getOne(authorizeId);
-            Employee manager = employeeRepo.getOne(managerId);
-            Department department = departmentRepo.getOne(deptId);
-            if (authorizeEmployee.getRole().getId() != 1)
-                return "You are not authorized. Only CEOs can assign managers to departments.";
+    public Department addManagerInDepartment (Long deptId, Long managerId, Long authorizeId) {
+        if(!isDepartmentExists(deptId, departmentRepo))
+            throw new IllegalStateException("Department with id "+deptId+ " does not exist");
+
+        if(isTheyExist(managerId,authorizeId, employeeRepo)) {
+            Employee authorizeEmployee = employeeRepo.findById(authorizeId).get();
+            Employee manager = employeeRepo.findById(managerId).get();
+            Department department = departmentRepo.findById(deptId).get();
+            if (authorizeEmployee.getRole() != CEO)
+                throw new IllegalStateException("You are not authorized. Only CEOs can assign managers to departments.");
 
             department.setDepartmentManager(manager);
-          //addEmployeeInDepartment(deptId, Manager.getId(), authorizeId);
             return departmentRepo.save(department);
         }
-        return "Id does NOT exists";
+        throw new IllegalStateException("Manager Id or Authorized Id does NOT exists");
     }
 
     @Transactional
-    public Object addEmployeeInDepartment (Long deptId, Long empId, Long authorizeId){
-        result = HelperClass.isDepartmentExists(deptId);
-        if(!result.equals("Yes"))
-            return result.lines();
-        if(!HelperClass.isTheyExist(empId, authorizeId))
-            return "Employee id does Not exist";
+    public Department addEmployeeInDepartment (Long deptId, Long empId, Long authorizeId){
+        if(!isDepartmentExists(deptId, departmentRepo))
+            throw new IllegalStateException("Department with id "+deptId+ " does not exist");
 
-        Optional<Employee> authorizeEmployee = employeeRepo.findById(authorizeId);
-        Department department = departmentRepo.getReferenceById(deptId);
-        Employee employee = employeeRepo.getReferenceById(empId);
+        if(!isTheyExist(empId, authorizeId, employeeRepo))
+            throw new IllegalStateException("Manager Id or Authorized Id does NOT exists");
 
-        if(HelperClass.isTheyExist(empId,authorizeId)) {
-            if (authorizeEmployee.get().getRole().getId() == 1)
+        Employee authorizeEmployee = employeeRepo.findById(authorizeId).get();
+        Department department = departmentRepo.findById(deptId).get();
+        Employee employee = employeeRepo.findById(empId).get();
+
+        if(isTheyExist(empId,authorizeId,employeeRepo)) {
+            if (authorizeEmployee.getRole() == CEO)
                 department.getEmployees().add(employee);
-            else if (authorizeEmployee.get().getRole().getId() == 2) {
+            else if (authorizeEmployee.getRole() == MANAGER) {
                 if (department.getDepartmentManager().getId() == authorizeId)
                     department.getEmployees().add(employee);
             }
-            else return "You are not authorized. Only CEO's and MANAGERs can add employee to department.";
+            else throw new IllegalStateException("You are not authorized. Only CEO's and MANAGERs can add employee to department.");
         }
         return departmentRepo.save(department);
     }
 
     @Transactional
-    public Object updateDepartment (Long departmentId, Department departmentDetails, Long authorizeId){
-        result = HelperClass.isDepartmentExists(departmentId);
-        if(!result.equals("Yes"))
-            return result.lines();
-        result = HelperClass.isEmployeeExists(authorizeId);
-        if(!result.equals("Yes"))
-            return result.lines();
+    public Department updateDepartment (Long departmentId, DepartmentDto departmentDetails, Long authorizeId){
+        if(!isDepartmentExists(departmentId,departmentRepo))
+            throw new IllegalStateException("Department with id "+departmentId+ " does not exist");
 
-        Department department = departmentRepo.getOne(departmentId);
-        Employee authorizeEmployee = employeeRepo.getOne(authorizeId);
-        if(authorizeEmployee.getRole().getId() != 1)
-            return "You are not authorized to update a department.";
+        if(!isEmployeeExists(authorizeId,employeeRepo))
+            throw new IllegalStateException("Employee with id "+authorizeId+ " does not exist");
+
+        Department department = departmentRepo.findById(departmentId).get();
+        Employee authorizeEmployee = employeeRepo.findById(authorizeId).get();
+        if(authorizeEmployee.getRole() != CEO)
+            throw new IllegalStateException("You are not authorized to update a department.");
 
         department.setName(departmentDetails.getName());
         department.setDescription(departmentDetails.getDescription());
         if(department.getDepartmentManager() != null) {
-            //get Employee info
             Long managerId = department.getDepartmentManager().getId();
-            Employee manager = employeeRepo.getReferenceById(managerId);
+            //Employee manager = employeeRepo.findById(managerId).get();
             addManagerInDepartment(departmentId, managerId , authorizeId );
         }
         return departmentRepo.save(department);
     }
 
     public Object deleteDepartment(Long departmentId, Long authorizeId) {
-        result = HelperClass.isDepartmentExists(departmentId);
-        if(!result.equals("Yes"))
-            return result.lines();
-        result = HelperClass.isEmployeeExists(authorizeId);
-        if(!result.equals("Yes"))
-            return result.lines();
+        if(!isDepartmentExists(departmentId,departmentRepo))
+            throw new IllegalStateException("Department with id "+departmentId+ " does not exist");
+
+        if(!isEmployeeExists(authorizeId,employeeRepo))
+            throw new IllegalStateException("Employee with id "+authorizeId+ " does not exist");
 
         Department deleteDepartment = departmentRepo.getReferenceById(departmentId);
-        Optional<Employee> employee = employeeRepo.findById(authorizeId);
+        Employee employee = employeeRepo.findById(authorizeId).get();
 
-        if(employee.get().getRole().getId() != 1)
+        if(employee.getRole() != CEO)
            return "You are not authorized to delete a department.";
         if (deleteDepartment.getDepartmentManager() != null || !deleteDepartment.getEmployees().isEmpty())
             return "Can not delete department with employees or a manager in it.";
