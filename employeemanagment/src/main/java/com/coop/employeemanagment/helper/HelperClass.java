@@ -4,33 +4,29 @@ import com.coop.employeemanagment.repos.IEmployeeRepo;
 import com.coop.employeemanagment.repos.IDepartmentRepo;
 
 public class HelperClass {
-    private static IDepartmentRepo departmentRepo;
-    private static IEmployeeRepo employeeRepo;
 
     public HelperClass() {
     }
 
-    public static String isEmployeeExists(Long id) {
+    public static Boolean isEmployeeExists(Long id, IEmployeeRepo employeeRepo) {
         if (employeeRepo.findById(id).isEmpty()) {
-            return "Employee with "+id+" does not exist";
+            return false;
         }
-        else return "Yes";
+        else return true;
     }
 
-    public static String isDepartmentExists(Long id) {
+    public static Boolean isDepartmentExists(Long id, IDepartmentRepo departmentRepo) {
         if (departmentRepo.findById(id).isEmpty()) {
-            return "Department with "+id+" does not exist";
+            return false;
         }
-        else return "Yes";
+        else return true;
     }
-    public static boolean isTheyExist(Long authorizeId, Long empId) {
+    public static Boolean isTheyExist(Long authorizeId, Long empId, IEmployeeRepo employeeRepo) {
 
         if(employeeRepo.findById(authorizeId).isPresent() &&
-                employeeRepo.findById(empId).isPresent())
+                employeeRepo.findById(empId).isPresent()) {
             return true;
-        else
-            return false;
-
+        }
+        else return false;
     }
-
 }
