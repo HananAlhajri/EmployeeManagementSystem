@@ -101,13 +101,12 @@ INSERT INTO `employee` (`id`, `first_name`, `father_name`,`grand_father_name`, `
 
 
 # How it looks: 
-<img src = "https://user-images.githubusercontent.com/92547643/231270218-867be17c-2564-43f1-bddd-0a45075332d2.png"> 
+<img src = "https://user-images.githubusercontent.com/92547643/232350955-92b43d6b-ff67-4f16-b77e-9d24516bde4b.png"> 
 <img src = "https://user-images.githubusercontent.com/92547643/231270364-732061c9-d3e0-41f2-b9b4-421294592d78.png">
 <img src = "https://user-images.githubusercontent.com/92547643/231270482-8e2928e1-ce59-4d56-b186-45efdb10d4d3.png"><br><br>
 
 ### IMPORTANT NOTEs: 
 > <li>'yourId' represent the employee doing the action. It is used to check the authority of the employee whose doing the action. <br> Example: A department can be deleted by CEO only. Therefor, the CEO enter their Id in 'yourId'.<br></li>
-> <li> addCEO is used to initialize the database, it is meant to be used by admin for one time to add the CEO. Then, the CEO can perform all the methods.<br></li><br>
 > <li>In employee: "/all/emp" && "/delete/{id} && getEmployeeById" AND In Account: "account/all" are used by developer to check faster. They can be removed and checked from database.<br></li>
 
 
