@@ -37,9 +37,9 @@ INSERT INTO `account` (`id`, `username`, `password`) VALUES
 ### Employee table: 
 ``` 
 INSERT INTO `employee` (`id`, `first_name`, `father_name`, `last_name`,`date_of_birth`,`account_id` , `job_title`, `national_id`, `role_id`) VALUES
-	(1, 'Hanan', 'Mohammed', 'Alhajri', '2000-12-24', 1 ,'Software Engineer', 109191, 1),
-	(1, 'Renad', 'Abdullah', 'Alosaimi', '2000-12-24', 2 ,'Software Engineer', 10882, 2),
-	(1, 'Maryam', 'Mohammed', 'Alsulaiman', '2000-12-24', 3 ,'Software Engineer', 298651, 3);
+	(1, 'Hanan', 'Mohammed', 'Alhajri', '2000-01-01', 1 ,'Software Engineer', 109191, 1),
+	(2, 'Renad', 'Abdullah', 'Alosaimi', '2000-01-01', 2 ,'Software Engineer', 10882, 2),
+	(3, 'Maryam', 'Mohammed', 'Alsulaiman', '2000-01-01', 3 ,'Software Engineer', 298651, 3);
 
 ```
 
